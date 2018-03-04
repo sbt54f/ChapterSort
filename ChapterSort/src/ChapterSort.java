@@ -23,21 +23,27 @@ public class ChapterSort {
 	public static class ChapterMapper extends Mapper<LongWritable, Text, Text, Text>
 	{
 		// init to "chapter 0"
-		static String currentChapter = null;
+		private static Text currentChapter = null;
 		static final Pattern p = Pattern.compile("(chapter \\S+)\\.", Pattern.CASE_INSENSITIVE);
-		
+	    private Text word = new Text();
+
 		@Override
 		public void map(LongWritable key, Text value, Context context
                     ) throws IOException, InterruptedException {
 			Matcher m = p.matcher(value.toString());
 			if(m.find())
 			{
-				currentChapter = m.group(1);
+				currentChapter = new Text(m.group(1));
 			}
 			
-			if(currentChapter != null)
-				context.write(new Text(currentChapter), new Text(value.toString()));
-
+			if(currentChapter == null)
+				return;
+			
+		      StringTokenizer itr = new StringTokenizer(value.toString());
+		    while (itr.hasMoreTokens()) {
+		    	word.set(itr.nextToken());
+		    	context.write(currentChapter, word);
+		    }
 		}
 	}
 	
