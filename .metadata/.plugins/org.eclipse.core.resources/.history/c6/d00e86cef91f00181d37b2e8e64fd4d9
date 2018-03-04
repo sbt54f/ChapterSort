@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,12 +30,12 @@ public class ChapterSort {
 				currentChapter = m.group(0);
 				context.write(new Text(currentChapter), value);
 			}
-//			StringTokenizer itr = new StringTokenizer(value.toString());
-//			while (itr.hasMoreTokens()) {
-//        		word.set(itr.nextToken());
-//        		context.write(word, one);
-//		  	}
-//			context.write(value, new Text("eyyy"));
+			StringTokenizer itr = new StringTokenizer(value.toString());
+			while (itr.hasMoreTokens()) {
+        		word.set(itr.nextToken());
+        		context.write(word, one);
+		  	}
+			context.write(value, new Text("eyyy"));
 		}
 	}
 	

@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,25 +17,25 @@ public class ChapterSort {
 
 	public static class ChapterMapper extends Mapper<LongWritable, Text, Text, Text>
 	{
-		// init to "chapter 0"
-		static String currentChapter = null;
-		static final Pattern p = Pattern.compile("chapter \\s+");
+//		// init to "chapter 0"
+//		static String currentChapter = null;
+//		static final Pattern p = Pattern.compile("chapter \\s+");
 		
 		@Override
 		public void map(LongWritable key, Text value, Context context
                     ) throws IOException, InterruptedException {
-			Matcher m = p.matcher(value.toString());
-			if(m.matches())
-			{
-				currentChapter = m.group(0);
-				context.write(new Text(currentChapter), value);
-			}
+//			Matcher m = p.matcher(value.toString());
+//			if(m.matches())
+//			{
+//				currentChapter = m.group(0);
+//				context.write(new Text(currentChapter), key);
+//			}
 //			StringTokenizer itr = new StringTokenizer(value.toString());
 //			while (itr.hasMoreTokens()) {
 //        		word.set(itr.nextToken());
 //        		context.write(word, one);
 //		  	}
-//			context.write(value, new Text("eyyy"));
+			context.write(value, new Text("eyyy"));
 		}
 	}
 	
