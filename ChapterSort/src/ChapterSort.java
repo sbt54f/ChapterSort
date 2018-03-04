@@ -36,7 +36,7 @@ public class ChapterSort {
 			}
 			
 			if(currentChapter != null)
-				context.write(new Text(currentChapter), value);
+				context.write(new Text(currentChapter), new Text(value.toString()));
 
 		}
 	}
@@ -69,13 +69,14 @@ public class ChapterSort {
 		}
 		
 		@Override
-		public void cleanup(Context contex) throws IOException, InterruptedException
+		public void cleanup(Context context) throws IOException, InterruptedException
 		{
 			for(String chapter : chapterList.keySet())
 			{
+				context.write(new Text(chapter), new Text("contains"));
 				for(String word : chapterList.get(chapter).keySet())
 				{
-					contex.write(new Text(chapter), new Text(word + ", " +chapterList.get(chapter).get(word)));					
+					context.write(new Text(word), new Text("" + chapterList.get(chapter).get(word)));					
 				}
 			}
 		}
