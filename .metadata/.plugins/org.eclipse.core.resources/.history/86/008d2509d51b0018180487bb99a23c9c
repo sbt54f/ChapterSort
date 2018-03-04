@@ -1,0 +1,17 @@
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+public class ChapterSort {
+
+	public static class ChapterMapper extends Mapper<Object, Text, Text, IntWritable>
+	{
+		
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

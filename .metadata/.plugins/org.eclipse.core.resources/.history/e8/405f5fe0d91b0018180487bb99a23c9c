@@ -1,0 +1,76 @@
+import java.io.IOException;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Mapper.Context;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+import WordCount.IntSumReducer;
+import WordCount.TokenizerMapper;
+
+import org.apache.hadoop.mapreduce.Reducer;
+
+public class ChapterSort {
+
+	public static class ChapterMapper extends Mapper<Object, Text, Text, Object>
+	{
+		// init to "chapter 0"
+		String currentChapter = null;
+		Pattern p = Pattern.compile("chapter \\s+");
+		
+		@Override
+		public void map(Object key, Text value, Context context
+                    ) throws IOException, InterruptedException {
+			Matcher m = p.matcher(value.toString());
+			if(m.matches())
+			{
+				currentChapter = m.group(0);
+				context.write(new Text(currentChapter), key);
+			}
+//			StringTokenizer itr = new StringTokenizer(value.toString());
+//			while (itr.hasMoreTokens()) {
+//        		word.set(itr.nextToken());
+//        		context.write(word, one);
+//		  	}
+		}
+	}
+	
+	public static class ChapterSorter extends Reducer<Text, Object, Text, Object>
+	{
+		@Override
+		public void reduce(Text key, Iterable<Object> values, 
+                Context context
+                ) throws IOException, InterruptedException {
+			int sum = 0;
+			for (Object val : values) {
+				context.write(key, val);
+			}
+		}
+	}
+	
+	
+	public static void main(String[] args) {
+	    Configuration conf = new Configuration();
+	    
+	    Job job = new Job(conf, "word count");
+	    job.setJarByClass(WordCount.class);
+	    job.setMapperClass(ChapterMapper.class);
+	    job.setCombinerClass(ChapterSorter.class);
+	    job.setReducerClass(ChapterSorter.class);
+	    job.setOutputKeyClass(Text.class);
+	    job.setOutputValueClass(IntWritable.class);
+	    FileInputFormat.addInputPath(job, new Path(args[0]));
+	    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+	    System.exit(job.waitForCompletion(true) ? 0 : 1);
+
+	}
+
+}
