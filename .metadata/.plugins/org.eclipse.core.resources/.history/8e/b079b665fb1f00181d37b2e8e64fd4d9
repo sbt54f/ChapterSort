@@ -54,15 +54,11 @@ public class ChapterSort {
 			{
 
 				for (Text val : values) {
-					context.write(new Text(key.toString()), new Text(val.toString()));
+					context.write(key, val);
 				}
 			}else
 			{
-				int sum = 0;
-				for (Text val : values) {
-					sum++;
-				}
-				context.write(new Text("NO"), new Text(""+sum));
+				context.write(new Text("NO"), value);
 			}
 		}
 	}

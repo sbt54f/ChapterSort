@@ -50,19 +50,8 @@ public class ChapterSort {
 		public void reduce(Text key, Iterable<Text> values, 
                 Context context
                 ) throws IOException, InterruptedException {
-			if(key.toString().equals("YES"))
-			{
-
-				for (Text val : values) {
-					context.write(new Text(key.toString()), new Text(val.toString()));
-				}
-			}else
-			{
-				int sum = 0;
-				for (Text val : values) {
-					sum++;
-				}
-				context.write(new Text("NO"), new Text(""+sum));
+			for (Text val : values) {
+				context.write(key, val);
 			}
 		}
 	}

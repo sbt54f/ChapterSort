@@ -54,7 +54,7 @@ public class ChapterSort {
 			{
 
 				for (Text val : values) {
-					context.write(new Text(key.toString()), new Text(val.toString()));
+					context.write(key, val);
 				}
 			}else
 			{
