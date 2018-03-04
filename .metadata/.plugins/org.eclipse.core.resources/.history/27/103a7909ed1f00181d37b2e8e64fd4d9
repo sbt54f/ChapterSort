@@ -4,7 +4,6 @@ import java.util.regex.Pattern;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -22,7 +21,7 @@ public class ChapterSort {
 		Pattern p = Pattern.compile("chapter \\s+");
 		
 		@Override
-		public void map(LongWritable key, Text value, Context context
+		public void map(Object key, Text value, Context context
                     ) throws IOException, InterruptedException {
 			Matcher m = p.matcher(value.toString());
 			if(m.matches())
@@ -57,6 +56,7 @@ public class ChapterSort {
 	    Job job = new Job(conf, "chapter sort");
 	    job.setJarByClass(ChapterSort.class);
 	    job.setMapperClass(ChapterMapper.class);
+	    job.setCombinerClass(ChapterSorter.class);
 	    job.setReducerClass(ChapterSorter.class);
 	    job.setOutputKeyClass(Text.class);
 	    job.setOutputValueClass(Object.class);

@@ -57,6 +57,7 @@ public class ChapterSort {
 	    Job job = new Job(conf, "chapter sort");
 	    job.setJarByClass(ChapterSort.class);
 	    job.setMapperClass(ChapterMapper.class);
+	    job.setCombinerClass(ChapterSorter.class);
 	    job.setReducerClass(ChapterSorter.class);
 	    job.setOutputKeyClass(Text.class);
 	    job.setOutputValueClass(Object.class);
