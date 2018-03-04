@@ -490,3 +490,9 @@ org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 1; Content is not al
 
 !ENTRY org.eclipse.jface.text 2 0 2018-03-04 15:33:30.594
 !MESSAGE Duplicate template id: 'org.eclipse.wst.xslt.templates.xpath.round'
+
+!ENTRY org.eclipse.jface.text 2 0 2018-03-04 16:43:22.973
+!MESSAGE Duplicate template id: 'org.eclipse.wst.xslt.templates.xpath.number'
+
+!ENTRY org.eclipse.jface.text 2 0 2018-03-04 16:43:22.980
+!MESSAGE Duplicate template id: 'org.eclipse.wst.xslt.templates.xpath.round'

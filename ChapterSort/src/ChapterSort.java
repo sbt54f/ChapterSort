@@ -20,15 +20,15 @@ public class ChapterSort {
 	{
 		// init to "chapter 0"
 		static String currentChapter = null;
-		static final Pattern p = Pattern.compile("chapter (\\S+)\\.", Pattern.CASE_INSENSITIVE);
+		static final Pattern p = Pattern.compile("(chapter \\S+)\\.", Pattern.CASE_INSENSITIVE);
 		
 		@Override
 		public void map(LongWritable key, Text value, Context context
                     ) throws IOException, InterruptedException {
 			Matcher m = p.matcher(value.toString());
-			if(m.matches())
+			if(m.find())
 			{
-				currentChapter = m.group(0);
+				currentChapter = m.group(1);
 				context.write(new Text("YES"), new Text(currentChapter));
 			}else
 			{
