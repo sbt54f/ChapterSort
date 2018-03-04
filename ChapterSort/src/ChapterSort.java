@@ -59,10 +59,10 @@ public class ChapterSort {
 				words.put(word, words.get(word)+1);
 			}
 			chapterList.put(key.toString(), new HashMap<String, Integer>());
-			for(String chapter : chapterList.keySet())
+			for(String word: words.keySet())
 			{
-				if(words.get(chapter) >= 10)
-					chapterList.get(key.toString()).put(chapter, words.get(chapter));
+				if(words.get(word) >= 10)
+					chapterList.get(key.toString()).put(word, words.get(word));
 			}
 		}
 		
