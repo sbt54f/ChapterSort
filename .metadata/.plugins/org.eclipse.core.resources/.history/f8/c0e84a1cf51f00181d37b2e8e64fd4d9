@@ -15,7 +15,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 public class ChapterSort {
 
-	public static class ChapterMapper extends Mapper<LongWritable, Text, Text, Text>
+	public static class ChapterMapper extends Mapper<LongWritable, Text, Text, Object>
 	{
 //		// init to "chapter 0"
 //		static String currentChapter = null;
@@ -39,13 +39,13 @@ public class ChapterSort {
 		}
 	}
 	
-	public static class ChapterSorter extends Reducer<Text, Text, Text, Text>
+	public static class ChapterSorter extends Reducer<Text, Object, Text, Object>
 	{
 		@Override
-		public void reduce(Text key, Iterable<Text> values, 
+		public void reduce(Text key, Iterable<Object> values, 
                 Context context
                 ) throws IOException, InterruptedException {
-			for (Text val : values) {
+			for (Object val : values) {
 				context.write(key, val);
 			}
 		}
@@ -54,12 +54,13 @@ public class ChapterSort {
 	
 	public static void main(String[] args) throws Exception{
 	    Configuration conf = new Configuration();
+	    conf.set("mapreduce.task.io.sort.mb", "100");
 	    Job job = new Job(conf, "chapter sort");
 	    job.setJarByClass(ChapterSort.class);
 	    job.setMapperClass(ChapterMapper.class);
 	    job.setReducerClass(ChapterSorter.class);
 	    job.setOutputKeyClass(Text.class);
-	    job.setOutputValueClass(Text.class);
+	    job.setOutputValueClass(Object.class);
 	    FileInputFormat.addInputPath(job, new Path(args[0]));
 	    FileOutputFormat.setOutputPath(job, new Path(args[1]));
 	    System.exit(job.waitForCompletion(true) ? 0 : 1);

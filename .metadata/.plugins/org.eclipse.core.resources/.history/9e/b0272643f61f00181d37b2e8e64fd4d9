@@ -42,10 +42,10 @@ public class ChapterSort {
 	public static class ChapterSorter extends Reducer<Text, Text, Text, Text>
 	{
 		@Override
-		public void reduce(Text key, Iterable<Text> values, 
+		public void reduce(Text key, Iterable<Object> values, 
                 Context context
                 ) throws IOException, InterruptedException {
-			for (Text val : values) {
+			for (Object val : values) {
 				context.write(key, val);
 			}
 		}
@@ -59,7 +59,7 @@ public class ChapterSort {
 	    job.setMapperClass(ChapterMapper.class);
 	    job.setReducerClass(ChapterSorter.class);
 	    job.setOutputKeyClass(Text.class);
-	    job.setOutputValueClass(Text.class);
+	    job.setOutputValueClass(Object.class);
 	    FileInputFormat.addInputPath(job, new Path(args[0]));
 	    FileOutputFormat.setOutputPath(job, new Path(args[1]));
 	    System.exit(job.waitForCompletion(true) ? 0 : 1);
