@@ -1,4 +1,8 @@
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,40 +33,40 @@ public class ChapterSort {
 			if(m.find())
 			{
 				currentChapter = m.group(1);
-				context.write(new Text("YES"), new Text(currentChapter));
-			}else
-			{
-				context.write(new Text("NO"), new Text(value.toString()));
 			}
-				
-//			StringTokenizer itr = new StringTokenizer(value.toString());
-//			while (itr.hasMoreTokens()) {
-//        		word.set(itr.nextToken());
-//        		context.write(word, one);
-//		  	}
-//			context.write(value, new Text("eyyy"));
+			
+			if(currentChapter != null)
+				context.write(new Text(currentChapter), value);
+
 		}
 	}
 	
 	public static class ChapterSorter extends Reducer<Text, Text, Text, Text>
 	{
+		public static Map<String, Map<String, Integer>> chapterList = new HashMap<>();
+		
 		@Override
 		public void reduce(Text key, Iterable<Text> values, 
                 Context context
                 ) throws IOException, InterruptedException {
-			if(key.toString().equals("YES"))
+			Map<String, Integer> words = new HashMap<>();
+			for(Text val : values)
 			{
-
-				for (Text val : values) {
-					context.write(new Text(key.toString()), new Text(val.toString()));
-				}
-			}else
+				String word = val.toString();
+				if(!words.containsKey(word))
+					words.put(word, 0);
+				
+				words.put(word, words.get(word)+1);
+			}
+			chapterList.put(key.toString(), words);
+		}
+		
+		@Override
+		public void cleanup(Context contex) throws IOException, InterruptedException
+		{
+			for(String chapter : chapterList.keySet())
 			{
-				int sum = 0;
-				for (Text val : values) {
-					sum++;
-				}
-				context.write(new Text("NO"), new Text(""+sum));
+				contex.write(new Text(chapter), new Text("" + chapterList.get(chapter).size()));
 			}
 		}
 	}
