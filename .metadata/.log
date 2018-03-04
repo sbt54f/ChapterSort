@@ -484,3 +484,9 @@ org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 1; Content is not al
 	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:653)
 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:590)
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1499)
+
+!ENTRY org.eclipse.jface.text 2 0 2018-03-04 15:33:30.589
+!MESSAGE Duplicate template id: 'org.eclipse.wst.xslt.templates.xpath.number'
+
+!ENTRY org.eclipse.jface.text 2 0 2018-03-04 15:33:30.594
+!MESSAGE Duplicate template id: 'org.eclipse.wst.xslt.templates.xpath.round'
