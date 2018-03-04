@@ -1,3 +1,5 @@
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,7 +13,15 @@ public class Test {
 			System.out.println(m.group(1));
 		}
 		System.out.println(m.find());
-
+		
+		Map<String, String> map = new HashMap<>();
+		map.put("hey", "you");
+		map.put("hello", "world");
+		for(String key : map.keySet())
+		{
+			map.remove(key);
+		}
+		
 	}
 
 }

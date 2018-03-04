@@ -58,7 +58,12 @@ public class ChapterSort {
 				
 				words.put(word, words.get(word)+1);
 			}
-			chapterList.put(key.toString(), words);
+			chapterList.put(key.toString(), new HashMap<String, Integer>());
+			for(String chapter : chapterList.keySet())
+			{
+				if(words.get(chapter) >= 10)
+					chapterList.get(key.toString()).put(chapter, words.get(chapter));
+			}
 		}
 		
 		@Override
@@ -66,7 +71,10 @@ public class ChapterSort {
 		{
 			for(String chapter : chapterList.keySet())
 			{
-				contex.write(new Text(chapter), new Text("" + chapterList.get(chapter).size()));
+				for(String word : chapterList.get(chapter).keySet())
+				{
+					contex.write(new Text(chapter), new Text(word + ", " +chapterList.get(chapter).get(word)));					
+				}
 			}
 		}
 	}
