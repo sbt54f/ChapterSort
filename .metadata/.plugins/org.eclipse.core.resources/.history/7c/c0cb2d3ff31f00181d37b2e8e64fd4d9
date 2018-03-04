@@ -18,8 +18,8 @@ public class ChapterSort {
 	public static class ChapterMapper extends Mapper<LongWritable, Text, Text, Object>
 	{
 		// init to "chapter 0"
-		static String currentChapter = null;
-		static final Pattern p = Pattern.compile("chapter \\s+");
+		String currentChapter = null;
+		Pattern p = Pattern.compile("chapter \\s+");
 		
 		@Override
 		public void map(LongWritable key, Text value, Context context
