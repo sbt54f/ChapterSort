@@ -62,7 +62,9 @@ public class ChapterSort {
 			for(String word: words.keySet())
 			{
 				if(words.get(word) >= 10)
+				{
 					chapterList.get(key.toString()).put(word, words.get(word));
+				}
 			}
 		}
 		
