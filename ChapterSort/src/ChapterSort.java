@@ -1,9 +1,14 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NavigableMap;
+import java.util.SortedMap;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,7 +54,7 @@ public class ChapterSort {
 	
 	public static class ChapterSorter extends Reducer<Text, Text, Text, Text>
 	{
-		public static Map<String, Map<String, Integer>> chapterList = new HashMap<>();
+		public static Map<String, Map<String, Integer>> chapterMap = new HashMap<>();
 		
 		@Override
 		public void reduce(Text key, Iterable<Text> values, 
@@ -64,25 +69,41 @@ public class ChapterSort {
 				
 				words.put(word, words.get(word)+1);
 			}
-			chapterList.put(key.toString(), new HashMap<String, Integer>());
+			chapterMap.put(key.toString(), new HashMap<String, Integer>());
+
 			for(String word: words.keySet())
 			{
-				if(words.get(word) >= 10)
+				if(words.get(word) >= Integer.parseInt(context.getConfiguration().get("threshhold")))
 				{
-					chapterList.get(key.toString()).put(word, words.get(word));
+					chapterMap.get(key.toString()).put(word, words.get(word));
 				}
 			}
 		}
-		
+
 		@Override
 		public void cleanup(Context context) throws IOException, InterruptedException
 		{
-			for(String chapter : chapterList.keySet())
+			Map<String, Integer> keywordMap = new HashMap<>();
+			for(String chapter : chapterMap.keySet())
 			{
 				context.write(new Text(chapter), new Text("contains"));
-				for(String word : chapterList.get(chapter).keySet())
+				for(String word : chapterMap.get(chapter).keySet())
 				{
-					context.write(new Text(word), new Text("" + chapterList.get(chapter).get(word)));					
+					if(!keywordMap.containsKey(word))
+					{
+						keywordMap.put(word, 0);
+					}
+					keywordMap.put(word, keywordMap.get(word) + chapterMap.get(chapter).get(word));
+				}
+			}
+
+			SortedMap<String, Integer> m = new TreeMap(keywordMap);
+			for(Entry<String, Integer> entry : m.entrySet()) {
+				context.write(new Text(entry.getKey()), new Text("" + entry.getValue()));									
+				for(String chapter : chapterMap.keySet())
+				{
+					if(chapterMap.get(chapter).containsKey(entry.getKey()))
+						context.write(new Text(chapter), new Text("" + chapterMap.get(chapter).get(entry.getKey())));									
 				}
 			}
 		}
@@ -91,6 +112,7 @@ public class ChapterSort {
 	
 	public static void main(String[] args) throws Exception{
 	    Configuration conf = new Configuration();
+	    conf.set("threshhold", args[2]);
 	    Job job = new Job(conf, "chapter sort");
 	    job.setJarByClass(ChapterSort.class);
 	    job.setMapperClass(ChapterMapper.class);
