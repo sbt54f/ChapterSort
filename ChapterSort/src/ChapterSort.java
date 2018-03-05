@@ -1,7 +1,9 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -86,7 +88,6 @@ public class ChapterSort {
 			Map<String, Integer> keywordMap = new HashMap<>();
 			for(String chapter : chapterMap.keySet())
 			{
-				context.write(new Text(chapter), new Text("contains"));
 				for(String word : chapterMap.get(chapter).keySet())
 				{
 					if(!keywordMap.containsKey(word))
@@ -96,9 +97,16 @@ public class ChapterSort {
 					keywordMap.put(word, keywordMap.get(word) + chapterMap.get(chapter).get(word));
 				}
 			}
+			List<Entry<String, Integer>> sorted = new LinkedList(keywordMap.entrySet());
+			Collections.sort(sorted, new Comparator<Entry<String, Integer>>() {
 
-			SortedMap<String, Integer> m = new TreeMap(keywordMap);
-			for(Entry<String, Integer> entry : m.entrySet()) {
+				@Override
+				public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
+					
+					return o1.getValue().compareTo(o2.getValue());
+				}
+			});
+			for(Entry<String, Integer> entry : sorted) {
 				context.write(new Text(entry.getKey()), new Text("" + entry.getValue()));									
 				for(String chapter : chapterMap.keySet())
 				{
