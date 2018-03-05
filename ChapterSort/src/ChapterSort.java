@@ -1,13 +1,16 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
@@ -33,6 +36,14 @@ public class ChapterSort {
 		private static Text currentChapter = null;
 		static final Pattern p = Pattern.compile("(chapter \\S+)\\.", Pattern.CASE_INSENSITIVE);
 	    private Text word = new Text();
+	    private Set<String> filter = null;
+	    
+	    @Override
+	    public void setup(Context context)
+	    {
+	    	filter = new HashSet<String>(Arrays.asList(context.getConfiguration().get("filter").split(",")));
+	    }
+
 
 		@Override
 		public void map(LongWritable key, Text value, Context context
@@ -48,7 +59,10 @@ public class ChapterSort {
 			
 		      StringTokenizer itr = new StringTokenizer(value.toString());
 		    while (itr.hasMoreTokens()) {
-		    	word.set(itr.nextToken());
+		    	String next = itr.nextToken();
+		    	if(filter.contains(next))
+		    		continue;
+		    	word.set(next);
 		    	context.write(currentChapter, word);
 		    }
 		}
@@ -103,7 +117,7 @@ public class ChapterSort {
 				@Override
 				public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
 					
-					return o1.getValue().compareTo(o2.getValue());
+					return o2.getValue().compareTo(o1.getValue());
 				}
 			});
 			for(Entry<String, Integer> entry : sorted) {
@@ -118,9 +132,10 @@ public class ChapterSort {
 	}
 	
 	
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) throws Exception{		
 	    Configuration conf = new Configuration();
 	    conf.set("threshhold", args[2]);
+	    conf.set("filter", args[3]);
 	    Job job = new Job(conf, "chapter sort");
 	    job.setJarByClass(ChapterSort.class);
 	    job.setMapperClass(ChapterMapper.class);
